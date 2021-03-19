@@ -1,17 +1,16 @@
 package com.groupeonepoint.onerent.reservation;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.groupeonepoint.onerent.hostels.Hostel;
 import com.groupeonepoint.onerent.rocket.Rocket;
-import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import java.util.Optional;
 
 @Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Reservation extends PanacheEntity {
 
     private String userName;
@@ -26,18 +25,24 @@ public class Reservation extends PanacheEntity {
     @JoinColumn(name = "rocket_id")
     private Rocket rocket;
 
-    public static Uni<Boolean> existsByUserNameAndMonthAndHouseName(String user, int month, String name) {
-        return count("userName = ?1 and month = ?2 and house.name = ?3", user, month, name)
-                .map(count -> count > 0);
+    public static Boolean existsByUserNameAndMonthAndHouseName(String user, int month, String name) {
+        return count("userName = ?1 and month = ?2 and house.name = ?3", user, month, name) > 0;
     }
 
-    public static Uni<Reservation> findByUserNameAndMonthAndHouseIsNotNull(String user, int month) {
-        return find("userName = ?1 and month = ?2 and house is not null", user, month).firstResult();
+    public static Optional<Reservation> findByUserNameAndMonthAndHouseIsNotNull(String user, int month) {
+        return find("userName = ?1 and month = ?2 and house is not null", user, month).firstResultOptional();
     }
 
-    public static Uni<Boolean> existsByMonthAndRocketName(int month, String name) {
-        return count("month = ?1 and rocket.name = ?2", month, name)
-                .map(item -> item > 0);
+    public static Boolean existsByMonthAndRocketName(int month, String name) {
+        return count("month = ?1 and rocket.name = ?2", month, name) > 0;
+    }
+
+    public Reservation() {
+    }
+
+    public Reservation(String userName, int month) {
+        this.userName = userName;
+        this.month = month;
     }
 
     public String getUserName() {

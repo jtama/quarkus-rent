@@ -132,8 +132,13 @@ curl -X POST "http://localhost:8080/api/rockets/APOLLO%201?month=3" -H "accept: 
 
 
 ```bash
-curl -X POST "http://localhost:8080/api/hostels" -H "X-user-name: Joe" -H "X-user-roles: USER,ADMIN" -H "Content-Type: application/json" -d "{ \"id\": 0, \"name\": \"Ritz\"}"
+curl -X POST "http://localhost:8080/api/hostels" -H "X-user-name: Joe" -H "X-user-roles: USER,ADMIN" -H "Content-Type: application/json" -d "{ \"name\": \"Ritz\"}"
 curl -X POST "http://localhost:8080/api/hostels/Ritz/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
 curl -X POST "http://localhost:8080/api/rockets" -H "X-user-name: Joe" -H "X-user-roles: ADMIN" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"name\": \"APOLLO 1\", \"type\": \"EXPLOSIVE\"}"
 curl -X POST "http://localhost:8080/api/rockets/APOLLO%201/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
 ```
+
+curl -v -X POST "http://localhost:8080/api/hostels" -H "X-user-name: Joe" -H "X-user-roles: USER,ADMIN" -H "Content-Type: application/json" -d "{ \"name\": \"Ritze\"}"
+curl -v -X POST "http://localhost:8080/api/hostels/Ritze/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
+curl -v -X POST "http://localhost:8080/api/rockets" -H "X-user-name: Joe" -H "X-user-roles: ADMIN" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"name\": \"APOLLO 3\", \"type\": \"EXPLOSIVE\"}"
+curl -v -X POST "http://localhost:8080/api/rockets/APOLLO%203/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"

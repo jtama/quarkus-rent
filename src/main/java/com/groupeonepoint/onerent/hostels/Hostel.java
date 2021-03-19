@@ -1,18 +1,15 @@
 package com.groupeonepoint.onerent.hostels;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.groupeonepoint.onerent.exception.DuplicateEntityException;
 import com.groupeonepoint.onerent.exception.InvalidNameException;
-import io.quarkus.hibernate.reactive.panache.Panache;
-import io.quarkus.hibernate.reactive.panache.PanacheEntity;
-import io.smallrye.mutiny.Uni;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.Entity;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Hostel extends PanacheEntity {
 
     private static final String PATTERN = "[a-zA-Z]([-a-z0-9]*[a-z0-9])";
@@ -20,21 +17,15 @@ public class Hostel extends PanacheEntity {
 
     private String name;
 
-    public static Uni<Hostel> persistIfNotExists(Hostel hostel) {
+    public static Hostel persistIfNotExists(Hostel hostel) {
         if (!validateName(hostel.getName())) {
             throw new InvalidNameException(String.format("Name %s is invalid for a hostel. Name should comply the following pattern %s", hostel.getName(), PATTERN));
         }
-        return Panache.withTransaction(() ->
-                Hostel.count("name", hostel.name)
-                        .map(item -> item > 0)
-                        .onItem()
-                        .transformToUni(exists -> {
-                            if (exists) {
-                                throw new DuplicateEntityException(String.format("Hostel %s already exists", hostel.name));
-                            }
-                            return hostel.persist();
-                        }))
-                .replaceWith(hostel);
+        if (Hostel.count("name", hostel.name) > 0) {
+            throw new DuplicateEntityException(String.format("Hostel %s already exists", hostel.name));
+        }
+        hostel.persist();
+        return hostel;
     }
 
     private static boolean validateName(String name) {
@@ -42,8 +33,8 @@ public class Hostel extends PanacheEntity {
         return matcher.matches();
     }
 
-    public static Uni<Hostel> findByName(String name) {
-        return find("name", name).firstResult();
+    public static Optional<Hostel> findByName(String name) {
+        return find("name", name).firstResultOptional();
     }
 
 

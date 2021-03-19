@@ -1,16 +1,16 @@
 package com.groupeonepoint.onerent.exception;
 
-import io.smallrye.mutiny.CompositeException;
-import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class OnerentExceptionHandler {
+@Provider
+public class OnerentExceptionHandler implements ExceptionMapper<Exception> {
 
     private static Map<Class<?>, Function<Throwable, Response>> mappers;
     private static Function<Throwable, Response> functionalError =  e -> Response.status(Response.Status.OK).entity(e.getMessage()).build();
@@ -35,21 +35,8 @@ public class OnerentExceptionHandler {
 
     }
 
-
-    @ServerExceptionMapper
-    public Response handleComposite(CompositeException e){
-        return mappers.getOrDefault(e.getCause().getClass(), defaultHandler).apply(e.getCause());
-    }
-
-    @ServerExceptionMapper
-    public Response handleException(InvalidNameException e){
-        return functionalError.apply(e);
-    }
-
-    @ServerExceptionMapper
-    public Response handleException(Exception e){
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(e.getMessage())
-                .build();
+    @Override
+    public Response toResponse(Exception exception) {
+        return mappers.getOrDefault(exception.getClass(), defaultHandler).apply(exception);
     }
 }
