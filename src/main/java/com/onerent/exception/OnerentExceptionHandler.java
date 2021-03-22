@@ -1,11 +1,10 @@
-package com.groupeonepoint.onerent.exception;
+package com.onerent.exception;
 
 import io.smallrye.mutiny.CompositeException;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;

@@ -1,8 +1,8 @@
-package com.groupeonepoint.onerent.hostels;
+package com.onerent.hostels;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.groupeonepoint.onerent.exception.DuplicateEntityException;
-import com.groupeonepoint.onerent.exception.InvalidNameException;
+import com.onerent.exception.DuplicateEntityException;
+import com.onerent.exception.InvalidNameException;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;

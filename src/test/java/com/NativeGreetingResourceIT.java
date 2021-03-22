@@ -1,4 +1,4 @@
-package com.groupeonepoint;
+package com;
 
 import io.quarkus.test.junit.NativeImageTest;
 

@@ -1,4 +1,4 @@
-package com.groupeonepoint.onerent.rocket;
+package com.onerent.rocket;
 
 public enum RocketType {
     EXPLOSIVE("explosive"),

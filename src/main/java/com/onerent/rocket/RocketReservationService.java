@@ -1,10 +1,10 @@
-package com.groupeonepoint.onerent.rocket;
+package com.onerent.rocket;
 
-import com.groupeonepoint.onerent.exception.InvalidBookingException;
-import com.groupeonepoint.onerent.exception.UnavailableException;
-import com.groupeonepoint.onerent.exception.UnknownEntityException;
-import com.groupeonepoint.onerent.reservation.Reservation;
-import com.groupeonepoint.onerent.util.MonthValidator;
+import com.onerent.exception.InvalidBookingException;
+import com.onerent.exception.UnavailableException;
+import com.onerent.exception.UnknownEntityException;
+import com.onerent.reservation.Reservation;
+import com.onerent.util.MonthValidator;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.tuples.Tuple2;
@@ -23,8 +23,8 @@ public class RocketReservationService {
     public Uni<Reservation> book(String name, int month, String user) {
         monthValidator.validateMonth(month);
         return Panache.withTransaction(() -> {
-            Uni<Reservation> res = Reservation.findByUserNameAndMonthAndHouseIsNotNull(user, month)
-                    .onItem().ifNull().failWith(() -> new InvalidBookingException(String.format("No house is booked for user %S on month %s", user, month)))
+            Uni<Reservation> res = Reservation.findByUserNameAndMonthAndHostelIsNotNull(user, month)
+                    .onItem().ifNull().failWith(() -> new InvalidBookingException(String.format("No hostel is booked for user %S on month %s", user, month)))
                     .onItem().transformToUni(item ->
                             Reservation.existsByMonthAndRocketName(month, name)
                                     .onItem()

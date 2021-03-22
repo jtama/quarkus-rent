@@ -1,11 +1,10 @@
-package com.groupeonepoint.onerent.hostels;
+package com.onerent.hostels;
 
-import com.groupeonepoint.onerent.reservation.Reservation;
+import com.onerent.reservation.Reservation;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.jboss.resteasy.reactive.RestQuery;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

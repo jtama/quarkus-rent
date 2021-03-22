@@ -1,10 +1,9 @@
-package com.groupeonepoint.onerent.security;
+package com.onerent.security;
 
 import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.identity.AuthenticationRequestContext;
 import io.quarkus.security.identity.IdentityProvider;
 import io.quarkus.security.identity.SecurityIdentity;
-import io.quarkus.security.runtime.AnonymousIdentityProvider;
 import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import io.smallrye.mutiny.Uni;
 import org.jboss.logging.Logger;

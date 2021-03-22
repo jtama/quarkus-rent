@@ -1,4 +1,4 @@
-package com.groupeonepoint.onerent.util;
+package com.onerent.util;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;

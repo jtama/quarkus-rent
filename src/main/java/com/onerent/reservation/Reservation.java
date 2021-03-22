@@ -1,8 +1,8 @@
-package com.groupeonepoint.onerent.reservation;
+package com.onerent.reservation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.groupeonepoint.onerent.hostels.Hostel;
-import com.groupeonepoint.onerent.rocket.Rocket;
+import com.onerent.hostels.Hostel;
+import com.onerent.rocket.Rocket;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;
 
@@ -20,19 +20,19 @@ public class Reservation extends PanacheEntity {
 
     @OneToOne
     @JoinColumn(name = "hostel_id")
-    private Hostel house;
+    private Hostel hostel;
 
     @OneToOne
     @JoinColumn(name = "rocket_id")
     private Rocket rocket;
 
-    public static Uni<Boolean> existsByUserNameAndMonthAndHouseName(String user, int month, String name) {
-        return count("userName = ?1 and month = ?2 and house.name = ?3", user, month, name)
+    public static Uni<Boolean> existsByUserNameAndMonthAndHostelName(String user, int month, String name) {
+        return count("userName = ?1 and month = ?2 and hostel.name = ?3", user, month, name)
                 .map(count -> count > 0);
     }
 
-    public static Uni<Reservation> findByUserNameAndMonthAndHouseIsNotNull(String user, int month) {
-        return find("userName = ?1 and month = ?2 and house is not null", user, month).firstResult();
+    public static Uni<Reservation> findByUserNameAndMonthAndHostelIsNotNull(String user, int month) {
+        return find("userName = ?1 and month = ?2 and hostel is not null", user, month).firstResult();
     }
 
     public static Uni<Boolean> existsByMonthAndRocketName(int month, String name) {
@@ -56,12 +56,12 @@ public class Reservation extends PanacheEntity {
         this.month = month;
     }
 
-    public Hostel getHouse() {
-        return house;
+    public Hostel getHostel() {
+        return hostel;
     }
 
-    public void setHouse(Hostel house) {
-        this.house = house;
+    public void setHostel(Hostel hostel) {
+        this.hostel = hostel;
     }
 
     public Rocket getRocket() {

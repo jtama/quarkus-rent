@@ -1,8 +1,8 @@
-package com.groupeonepoint.onerent.rocket;
+package com.onerent.rocket;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.groupeonepoint.onerent.exception.DuplicateEntityException;
+import com.onerent.exception.DuplicateEntityException;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.smallrye.mutiny.Uni;

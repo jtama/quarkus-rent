@@ -1,6 +1,6 @@
-package com.groupeonepoint.onerent.rocket;
+package com.onerent.rocket;
 
-import com.groupeonepoint.onerent.reservation.Reservation;
+import com.onerent.reservation.Reservation;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.jboss.resteasy.reactive.RestQuery;

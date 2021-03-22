@@ -1,4 +1,4 @@
-package com.groupeonepoint.onerent.security;
+package com.onerent.security;
 
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;

@@ -1,4 +1,4 @@
-package com.groupeonepoint.onerent.security;
+package com.onerent.security;
 
 import io.quarkus.security.identity.request.AuthenticationRequest;
 

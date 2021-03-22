@@ -1,4 +1,4 @@
-package com.groupeonepoint.onerent.exception;
+package com.onerent.exception;
 
 public class InvalidBookingException extends RuntimeException {
     public InvalidBookingException(String message) {
