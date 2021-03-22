@@ -1,6 +1,7 @@
 package com.onerent.hostels;
 
 import com.onerent.reservation.Reservation;
+import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.jboss.resteasy.reactive.RestQuery;
@@ -31,7 +32,10 @@ public class HostelController {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed("ADMIN")
     public Uni<Hostel> create(Hostel hostel) {
-        return Hostel.persistIfNotExists(hostel);
+        return
+                Panache.withTransaction(() ->
+                        Hostel.persistIfNotExists(hostel)
+                );
     }
 
     @POST
