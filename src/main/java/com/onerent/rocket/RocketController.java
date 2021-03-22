@@ -1,7 +1,6 @@
-package com.groupeonepoint.onerent.rocket;
+package com.onerent.rocket;
 
-import com.groupeonepoint.onerent.reservation.Reservation;
-import io.smallrye.mutiny.Uni;
+import com.onerent.reservation.Reservation;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;

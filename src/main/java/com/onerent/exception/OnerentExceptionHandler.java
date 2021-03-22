@@ -1,7 +1,6 @@
-package com.groupeonepoint.onerent.exception;
+package com.onerent.exception;
 
 import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;

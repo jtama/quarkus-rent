@@ -1,6 +1,6 @@
-package com.groupeonepoint.onerent.hostels;
+package com.onerent.hostels;
 
-import com.groupeonepoint.onerent.reservation.Reservation;
+import com.onerent.reservation.Reservation;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;

@@ -1,7 +1,7 @@
-package com.groupeonepoint.onerent.hostels;
+package com.onerent.hostels;
 
-import com.groupeonepoint.onerent.exception.DuplicateEntityException;
-import com.groupeonepoint.onerent.exception.InvalidNameException;
+import com.onerent.exception.DuplicateEntityException;
+import com.onerent.exception.InvalidNameException;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.Entity;

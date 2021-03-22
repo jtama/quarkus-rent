@@ -45,7 +45,7 @@ You can then execute your native executable with: `./target/one-rent-1.0.0-SNAPS
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
 
-## House requests
+## Hostel requests
 
 ### Get ALL
 
@@ -124,7 +124,7 @@ WARNING: Don't repeat this operation.
 ```bash
 //Invalid Month
 curl -X POST "http://localhost:8080/api/rockets/APOLLO%201?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
-//No house booked
+//No hostel booked
 curl -X POST "http://localhost:8080/api/rockets/APOLLO%201?month=3" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
 ```
 
@@ -137,8 +137,3 @@ curl -X POST "http://localhost:8080/api/hostels/Ritz/book?month=2" -H "accept: a
 curl -X POST "http://localhost:8080/api/rockets" -H "X-user-name: Joe" -H "X-user-roles: ADMIN" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"name\": \"APOLLO 1\", \"type\": \"EXPLOSIVE\"}"
 curl -X POST "http://localhost:8080/api/rockets/APOLLO%201/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
 ```
-
-curl -v -X POST "http://localhost:8080/api/hostels" -H "X-user-name: Joe" -H "X-user-roles: USER,ADMIN" -H "Content-Type: application/json" -d "{ \"name\": \"Ritze\"}"
-curl -v -X POST "http://localhost:8080/api/hostels/Ritze/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"
-curl -v -X POST "http://localhost:8080/api/rockets" -H "X-user-name: Joe" -H "X-user-roles: ADMIN" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"name\": \"APOLLO 3\", \"type\": \"EXPLOSIVE\"}"
-curl -v -X POST "http://localhost:8080/api/rockets/APOLLO%203/book?month=2" -H "accept: application/json" -H "X-user-name: Joe" -H "X-user-roles: USER"

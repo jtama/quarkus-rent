@@ -1,7 +1,7 @@
-package com.groupeonepoint.onerent.rocket;
+package com.onerent.rocket;
 
 
-import com.groupeonepoint.onerent.exception.DuplicateEntityException;
+import com.onerent.exception.DuplicateEntityException;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.Entity;
