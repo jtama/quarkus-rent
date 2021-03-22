@@ -25,17 +25,19 @@ public class RocketReservationService {
         return Panache.withTransaction(() -> {
             Uni<Reservation> res = Reservation.findByUserNameAndMonthAndHostelIsNotNull(user, month)
                     .onItem().ifNull().failWith(() -> new InvalidBookingException(String.format("No hostel is booked for user %S on month %s", user, month)))
-                    .onItem().transformToUni(item ->
+                    .onItem().transformToUni(item -> // transformToUni to trigger subscription ?
                             Reservation.existsByMonthAndRocketName(month, name)
-                                    .onItem()
-                                    .transform(exists -> {
+                                    .map(exists -> {
                                         if (exists) {
                                             throw new UnavailableException(String.format("Rocket %s has already been booked for month %s", name, month));
                                         }
-                                        return item;
+                                        return item; // Not happy with this closure use.
                                     })
                     );
-            Uni<Rocket> rocketUni = Rocket.findByName(name).onItem().ifNull().failWith(() -> new UnknownEntityException(String.format("Rocket %s doesn't exists", name)));
+            Uni<Rocket> rocketUni = Rocket.findByName(name)
+                    .onItem()
+                    .ifNull().failWith(() -> new UnknownEntityException(String.format("Rocket %s doesn't exists", name)));
+            // Is there really no way to avoid combine ?
             return Uni.combine().all().unis(res, rocketUni)
                     .asTuple()
                     .onItem().invoke(tuple -> {

@@ -19,7 +19,7 @@ public class HostelReservationService {
     public Uni<Reservation> book(String name, int month, String userName) {
         monthValidator.validateMonth(month);
 
-        Reservation reservation = new Reservation();
+
         // If id isn't null, a booking has already take place for this tuple
         return Panache.withTransaction(() ->
                 Reservation.existsByUserNameAndMonthAndHostelName(userName, month, name)
@@ -27,16 +27,17 @@ public class HostelReservationService {
                             if (exists) {
                                 throw new UnavailableException(String.format("Hostel %s is already booked for month %s", name, month));
                             }
-                            reservation.setMonth(month);
-                            reservation.setUserName(userName);
                         })
-                        .onItem().transformToUni(item -> Hostel.findByName(name))
+                        .onItem().transformToUni(item -> Hostel.findByName(name)) // transformToUni to trigger subscription I think
                         .onItem().ifNull().failWith(() -> new UnknownEntityException(String.format("The hostel %s doesn't exist", name)))
                         .onItem().transformToUni(hostel -> {
+                            Reservation reservation = new Reservation();
+                            reservation.setMonth(month);
+                            reservation.setUserName(userName);
                             reservation.setHostel(hostel);
-                            return reservation.persist();
+                            return reservation.persist().replaceWith(reservation);
                         })
-        ).replaceWith(reservation);
+        );
     }
 
 }
