@@ -7,7 +7,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=onespace
+      - POSTGRES_DB=onerent
       - POSTGRES_PASSWORD=mysecretpassword
   pgadmin:
     image: dpage/pgadmin4
