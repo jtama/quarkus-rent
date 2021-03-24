@@ -1,6 +1,5 @@
 package com.onerent.security;
 
-import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.identity.AuthenticationRequestContext;
 import io.quarkus.security.identity.IdentityProvider;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -25,21 +24,10 @@ public class NaiveSecurityProvider implements IdentityProvider<HeaderAuthenticat
     @Override
     public Uni<SecurityIdentity> authenticate(HeaderAuthenticationRequest request, AuthenticationRequestContext context) {
         return Uni.createFrom().item(() -> {
-            try {
-                QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder();
-                if (request.getPrincipal().getName() == null) {
-                    builder.setPrincipal(() -> "");
-                } else {
-                    builder.setPrincipal(request.getPrincipal());
-                    for (String i : request.getRoles()) {
-                        builder.addRole(i);
-                    }
-                }
-                return builder.build();
-            } catch (SecurityException e) {
-                logger.debug("Authentication failed", e);
-                throw new AuthenticationFailedException(e);
-            }
+            QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder();
+            builder.setPrincipal(request.getPrincipal());
+            request.getRoles().forEach(builder::addRole);
+            return builder.build();
         });
     }
 

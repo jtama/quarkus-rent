@@ -4,6 +4,8 @@ import io.smallrye.mutiny.CompositeException;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,11 @@ public class OnerentExceptionHandler {
     @ServerExceptionMapper
     public Response handleException(InvalidNameException e){
         return functionalError.apply(e);
+    }
+
+    @ServerExceptionMapper
+    public Response handleException(WebApplicationException e){
+        return e.getResponse();
     }
 
     @ServerExceptionMapper

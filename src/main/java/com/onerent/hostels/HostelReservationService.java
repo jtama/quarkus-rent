@@ -9,28 +9,37 @@ import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.function.Function;
 
 @ApplicationScoped
 public class HostelReservationService {
 
-    @Inject
-    MonthValidator monthValidator;
+    private MonthValidator monthValidator;
+
+    public HostelReservationService(MonthValidator monthValidator) {
+        this.monthValidator = monthValidator;
+    }
 
     public Uni<Reservation> book(String name, int month, String userName) {
         monthValidator.validateMonth(month);
-
-
-        // If id isn't null, a booking has already take place for this tuple
+        // If hostel exists and is available
         return Panache.withTransaction(() ->
+                // Starts the stream
                 Reservation.existsByUserNameAndMonthAndHostelName(userName, month, name)
-                        .onItem().invoke(exists -> {
+                        .onItem()
+                        // Chains to another stream
+                        .transformToUni(exists -> {
                             if (exists) {
                                 throw new UnavailableException(String.format("Hostel %s is already booked for month %s", name, month));
                             }
-                        })
-                        .onItem().transformToUni(item -> Hostel.findByName(name)) // transformToUni to trigger subscription I think
-                        .onItem().ifNull().failWith(() -> new UnknownEntityException(String.format("The hostel %s doesn't exist", name)))
-                        .onItem().transformToUni(hostel -> {
+                            return Hostel.findByName(name);
+                            })
+                        .onItem()
+                        // Chains to the last one
+                        .transformToUni(hostel -> {
+                            if (hostel == null) {
+                                throw new UnknownEntityException(String.format("The hostel %s doesn't exist", name));
+                            }
                             Reservation reservation = new Reservation();
                             reservation.setMonth(month);
                             reservation.setUserName(userName);

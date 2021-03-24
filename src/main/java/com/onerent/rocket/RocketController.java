@@ -22,8 +22,11 @@ import javax.ws.rs.core.SecurityContext;
 @Produces(MediaType.APPLICATION_JSON)
 public class RocketController {
 
-    @Inject
-    RocketReservationService rocketReservationService;
+    private RocketReservationService rocketReservationService;
+
+    public RocketController(RocketReservationService rocketReservationService) {
+        this.rocketReservationService = rocketReservationService;
+    }
 
     @GET
     public Multi<Rocket> getAll() {

@@ -19,8 +19,11 @@ import javax.ws.rs.core.SecurityContext;
 @Produces(MediaType.APPLICATION_JSON)
 public class HostelController {
 
-    @Inject
-    HostelReservationService hostelReservationService;
+    private HostelReservationService hostelReservationService;
+
+    public HostelController(HostelReservationService hostelReservationService) {
+        this.hostelReservationService = hostelReservationService;
+    }
 
     @GET
     public Multi<Hostel> getAll() {

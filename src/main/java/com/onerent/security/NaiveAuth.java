@@ -38,8 +38,8 @@ public class NaiveAuth implements HttpAuthenticationMechanism {
 
         var userName = context.request().headers().get("X-user-name");
         var userRoles = Set.of(Optional.ofNullable(context.request().getHeader("X-user-roles")).orElse("").split(","));
-        HeaderAuthenticationRequest credential = new HeaderAuthenticationRequest(userName,
-                userRoles);
+        HeaderAuthenticationRequest credential = new HeaderAuthenticationRequest(userName);
+        credential.getRoles().addAll(userRoles);
         return identityProviderManager.authenticate(credential);
     }
 

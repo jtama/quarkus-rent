@@ -16,28 +16,32 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class RocketReservationService {
 
-    @Inject
-    MonthValidator monthValidator;
+    private MonthValidator monthValidator;
 
-    @Transactional(Transactional.TxType.MANDATORY)
+    public RocketReservationService(MonthValidator monthValidator) {
+        this.monthValidator = monthValidator;
+    }
+
     public Uni<Reservation> book(String name, int month, String user) {
         monthValidator.validateMonth(month);
         return Panache.withTransaction(() -> {
             Uni<Reservation> res = Reservation.findByUserNameAndMonthAndHostelIsNotNull(user, month)
-                    .onItem().ifNull().failWith(() -> new InvalidBookingException(String.format("No hostel is booked for user %S on month %s", user, month)))
-                    .onItem().transformToUni(item -> // transformToUni to trigger subscription ?
-                            Reservation.existsByMonthAndRocketName(month, name)
-                                    .map(exists -> {
-                                        if (exists) {
-                                            throw new UnavailableException(String.format("Rocket %s has already been booked for month %s", name, month));
-                                        }
-                                        return item; // Not happy with this closure use.
-                                    })
-                    );
+                    .onItem().transformToUni(item -> {
+                        if (item == null) {
+                            throw new InvalidBookingException(String.format("No hostel is booked for user %S on month %s", user, month));
+                        }
+                        return Reservation.existsByMonthAndRocketName(month, name)
+                                .map(exists -> {
+                                    if (exists) {
+                                        throw new UnavailableException(String.format("Rocket %s has already been booked for month %s", name, month));
+                                    }
+                                    return item; // Not happy with this closure use.
+                                });
+                    });
             Uni<Rocket> rocketUni = Rocket.findByName(name)
                     .onItem()
                     .ifNull().failWith(() -> new UnknownEntityException(String.format("Rocket %s doesn't exists", name)));
-            // Is there really no way to avoid combine ?
+            // Combine triggers incomming Unis.
             return Uni.combine().all().unis(res, rocketUni)
                     .asTuple()
                     .onItem().invoke(tuple -> {
