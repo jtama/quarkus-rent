@@ -1,20 +1,15 @@
 package com.onerent.hostels;
 
-import com.onerent.DatabaseResource;
 import com.onerent.rocket.Rocket;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -23,7 +18,7 @@ import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.startsWith;
 
 @QuarkusTest
-@QuarkusTestResource(DatabaseResource.class)
+//@QuarkusTestResource(DatabaseResource.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class HostelReservationServiceIT {
 
