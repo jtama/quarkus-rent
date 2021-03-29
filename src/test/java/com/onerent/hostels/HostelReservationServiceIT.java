@@ -18,7 +18,6 @@ import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.startsWith;
 
 @QuarkusTest
-//@QuarkusTestResource(DatabaseResource.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class HostelReservationServiceIT {
 
@@ -27,15 +26,13 @@ class HostelReservationServiceIT {
     void testInitialItems() {
         List<Hostel> hostels = get("/api/hostels").then()
                 .statusCode(HttpStatus.SC_OK)
-                .extract().body().as(new TypeRef<>() {
-
-                });
+                .extract()
+                .body().as(new TypeRef<>() {});
 
         List<Rocket> rockets = get("/api/rockets").then()
                 .statusCode(HttpStatus.SC_OK)
                 .header(HttpHeaders.CONTENT_TYPE, startsWith(MediaType.APPLICATION_JSON))
-                .extract().body().as(new TypeRef<>() {
-                });
+                .extract().body().as(new TypeRef<>() {});
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(hostels).hasSize(1)

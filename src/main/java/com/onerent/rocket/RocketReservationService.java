@@ -25,29 +25,34 @@ public class RocketReservationService {
     public Uni<Reservation> book(String name, int month, String user) {
         monthValidator.validateMonth(month);
         return Panache.withTransaction(() -> {
-            Uni<Reservation> res = Reservation.findByUserNameAndMonthAndHostelIsNotNull(user, month)
-                    .onItem().transformToUni(item -> {
-                        if (item == null) {
-                            throw new InvalidBookingException(String.format("No hostel is booked for user %S on month %s", user, month));
-                        }
-                        return Reservation.existsByMonthAndRocketName(month, name)
-                                .map(exists -> {
-                                    if (exists) {
-                                        throw new UnavailableException(String.format("Rocket %s has already been booked for month %s", name, month));
-                                    }
-                                    return item; // Not happy with this closure use.
-                                });
-                    });
-            Uni<Rocket> rocketUni = Rocket.findByName(name)
-                    .onItem()
-                    .ifNull().failWith(() -> new UnknownEntityException(String.format("Rocket %s doesn't exists", name)));
+            Uni<Reservation> hostelRes =
+                    Reservation.findByUserNameAndMonthAndHostelIsNotNull(user, month)
+                        .onItem().ifNull().failWith(noHostelBooked(user, month));
+            Uni<Boolean> rocketReserved =
+                    Reservation.existsByMonthAndRocketName(month, name)
+                        .onItem().invoke(booked -> failedIfBooked(booked, name, month));
+            Uni<Rocket> rocket =
+                    Rocket.findByName(name)
+                        .onItem().ifNull().failWith(() -> new UnknownEntityException(String.format("Rocket %s doesn't exists", name)));
             // Combine triggers incomming Unis.
-            return Uni.combine().all().unis(res, rocketUni)
-                    .asTuple()
-                    .onItem().invoke(tuple -> {
-                        tuple.getItem1().setRocket(tuple.getItem2());
-                        tuple.getItem1().persist();
-                    }).map(Tuple2::getItem1);
+            return Uni.combine().all().unis(hostelRes, rocket, rocketReserved)
+                    .combinedWith(this::bookRocket)
+                    .onItem().invoke(reservation -> reservation.persist().replaceWith(reservation));
         });
+    }
+
+    private void failedIfBooked(boolean booked, String name, int month){
+        if (booked) {
+            throw new UnavailableException(String.format("Rocket %s has already been booked for month %s", name, month));
+        }
+    }
+
+    private InvalidBookingException noHostelBooked(String user, int month) {
+        return new InvalidBookingException(String.format("No hostel is booked for user %S on month %s", user, month));
+    }
+
+    private Reservation bookRocket(Reservation res, Rocket rocket, Boolean ignored){
+        res.setRocket(rocket);
+        return res;
     }
 }

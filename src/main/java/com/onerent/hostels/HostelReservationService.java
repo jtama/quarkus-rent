@@ -8,8 +8,6 @@ import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.function.Function;
 
 @ApplicationScoped
 public class HostelReservationService {
@@ -25,28 +23,30 @@ public class HostelReservationService {
         // If hostel exists and is available
         return Panache.withTransaction(() ->
                 // Starts the stream
-                Reservation.existsByUserNameAndMonthAndHostelName(userName, month, name)
-                        .onItem()
+                Reservation.findByUserNameAndMonthAndHostelName(userName, month, name)
+                        .onItem().ifNotNull().invoke(this::alreadyBooked)
                         // Chains to another stream
-                        .transformToUni(exists -> {
-                            if (exists) {
-                                throw new UnavailableException(String.format("Hostel %s is already booked for month %s", name, month));
-                            }
-                            return Hostel.findByName(name);
-                            })
-                        .onItem()
+                        .onItem().transformToUni(reservation -> Hostel.findByName(name))
+                        .onItem().ifNull().failWith(failIfHostelIsNotFound(name))
                         // Chains to the last one
-                        .transformToUni(hostel -> {
-                            if (hostel == null) {
-                                throw new UnknownEntityException(String.format("The hostel %s doesn't exist", name));
-                            }
-                            Reservation reservation = new Reservation();
-                            reservation.setMonth(month);
-                            reservation.setUserName(userName);
-                            reservation.setHostel(hostel);
-                            return reservation.persist().replaceWith(reservation);
-                        })
+                        .onItem().transformToUni(hostel -> bookHostel(hostel, userName, month))
         );
+    }
+
+    private void alreadyBooked(Reservation reservation) {
+        throw new UnavailableException(String.format("Hostel %s is already booked for month %s", reservation.getHostel().getName(), reservation.getMonth()));
+    }
+
+    private UnknownEntityException failIfHostelIsNotFound(String name) {
+        return new UnknownEntityException(String.format("Hostel %s doesn't exist", name));
+    }
+
+    private Uni<Reservation> bookHostel(Hostel hostel, String userName, int month) {
+        Reservation reservation = new Reservation();
+        reservation.setMonth(month);
+        reservation.setUserName(userName);
+        reservation.setHostel(hostel);
+        return reservation.persist().replaceWith(reservation);
     }
 
 }

@@ -26,11 +26,6 @@ public class Reservation extends PanacheEntity {
     @JoinColumn(name = "rocket_id")
     private Rocket rocket;
 
-    public static Uni<Boolean> existsByUserNameAndMonthAndHostelName(String user, int month, String name) {
-        return count("userName = ?1 and month = ?2 and hostel.name = ?3", user, month, name)
-                .map(count -> count > 0);
-    }
-
     public static Uni<Reservation> findByUserNameAndMonthAndHostelIsNotNull(String user, int month) {
         return find("userName = ?1 and month = ?2 and hostel is not null", user, month).firstResult();
     }
@@ -38,6 +33,10 @@ public class Reservation extends PanacheEntity {
     public static Uni<Boolean> existsByMonthAndRocketName(int month, String name) {
         return count("month = ?1 and rocket.name = ?2", month, name)
                 .map(item -> item > 0);
+    }
+
+    public static Uni<Reservation> findByUserNameAndMonthAndHostelName(String userName, int month, String name) {
+        return find("userName = ?1 and month = ?2 and hostel.name = ?3", userName, month, name).firstResult();
     }
 
     public String getUserName() {
