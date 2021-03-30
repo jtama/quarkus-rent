@@ -7,11 +7,8 @@ import com.onerent.reservation.Reservation;
 import com.onerent.util.MonthValidator;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.tuples.Tuple2;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class RocketReservationService {
@@ -28,12 +25,15 @@ public class RocketReservationService {
             Uni<Reservation> hostelRes =
                     Reservation.findByUserNameAndMonthAndHostelIsNotNull(user, month)
                         .onItem().ifNull().failWith(noHostelBooked(user, month));
+
             Uni<Boolean> rocketReserved =
                     Reservation.existsByMonthAndRocketName(month, name)
                         .onItem().invoke(booked -> failedIfBooked(booked, name, month));
+
             Uni<Rocket> rocket =
                     Rocket.findByName(name)
                         .onItem().ifNull().failWith(() -> new UnknownEntityException(String.format("Rocket %s doesn't exists", name)));
+
             // Combine triggers incomming Unis.
             return Uni.combine().all().unis(hostelRes, rocket, rocketReserved)
                     .combinedWith(this::bookRocket)

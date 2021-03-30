@@ -3,10 +3,10 @@ package com.onerent.rocket;
 import com.onerent.reservation.Reservation;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,9 +23,11 @@ import javax.ws.rs.core.SecurityContext;
 public class RocketController {
 
     private RocketReservationService rocketReservationService;
+    private Logger logger;
 
-    public RocketController(RocketReservationService rocketReservationService) {
+    public RocketController(RocketReservationService rocketReservationService, Logger logger) {
         this.rocketReservationService = rocketReservationService;
+        this.logger = logger;
     }
 
     @GET
@@ -45,6 +47,7 @@ public class RocketController {
     @Path("/{name}/book")
     @RolesAllowed("USER")
     public Uni<Reservation> book(String name, @RestQuery Integer month, SecurityContext securityContext) {
+        logger.infof("Received book request : {} {}", name, month);
         return rocketReservationService.book(name, month, securityContext.getUserPrincipal().getName());
     }
 

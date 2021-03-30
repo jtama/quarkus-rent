@@ -5,6 +5,7 @@ import com.onerent.exception.DuplicateEntityException;
 import com.onerent.exception.InvalidNameException;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Uni;
 
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@RegisterForReflection
 public class Hostel extends PanacheEntity {
 
     private static final String PATTERN = "[a-zA-Z]([-a-z0-9]*[a-z0-9])";

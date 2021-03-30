@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.onerent.hostels.Hostel;
 import com.onerent.rocket.Rocket;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Uni;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@RegisterForReflection
 public class Reservation extends PanacheEntity {
 
     private String userName;
