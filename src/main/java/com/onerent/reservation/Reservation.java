@@ -3,6 +3,7 @@ package com.onerent.reservation;
 import com.onerent.hostels.Hostel;
 import com.onerent.rocket.Rocket;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -10,6 +11,7 @@ import javax.persistence.OneToOne;
 import java.util.Optional;
 
 @Entity
+@RegisterForReflection
 public class Reservation extends PanacheEntity {
 
     private String userName;

@@ -3,6 +3,7 @@ package com.onerent.rocket;
 
 import com.onerent.exception.DuplicateEntityException;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 import java.util.Optional;
 
 @Entity
+@RegisterForReflection
 public class Rocket extends PanacheEntity {
 
     @NotBlank
