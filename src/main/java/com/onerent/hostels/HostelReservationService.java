@@ -29,8 +29,8 @@ public class HostelReservationService {
                 // Starts the stream
                 Reservation.findByUserNameAndMonthAndHostelName(userName, month, name)
                         .onItem().ifNotNull().invoke(this::alreadyBooked)
-                        .onItem().ifNull().continueWith(Reservation::new).replaceWith(Hostel.findByName(name))
-                        .onItem().ifNull().failWith(failIfHostelIsNotFound(name))
+                        .onItem().transformToUni(res -> Hostel.findByName(name))
+                        .onItem().ifNull().failWith(() -> failIfHostelIsNotFound(name))
                         .onItem().ifNotNull().transformToUni(hostel -> bookHostel(hostel, userName, month))
         );
     }
