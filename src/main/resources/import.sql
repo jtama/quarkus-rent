@@ -1,3 +1,4 @@
+DELETE FROM public.hostel;
 INSERT INTO public.hostel(id, name) values (nextval('hibernate_sequence'), '"""Bike & Bed"" CharinCo Hostel"');
 INSERT INTO public.hostel(id, name) values (nextval('hibernate_sequence'), 'hostel.name');
 INSERT INTO public.hostel(id, name) values (nextval('hibernate_sequence'), '& And Hostel');
