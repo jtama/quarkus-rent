@@ -1,11 +1,12 @@
 package com.onerent.security;
 
 import io.quarkus.security.identity.request.AuthenticationRequest;
+import io.quarkus.security.identity.request.BaseAuthenticationRequest;
 
 import java.security.Principal;
 import java.util.Set;
 
-public class HeaderAuthenticationRequest implements AuthenticationRequest {
+public class HeaderAuthenticationRequest extends BaseAuthenticationRequest {
     private String userName;
     private Set<String> roles;
 
